@@ -17,21 +17,29 @@ cd learn-nodejs-api
 
 2. Install dependencies:
 
+```sh
 npm install
+```
 
 or if you're using yarn:
 
+```sh
 yarn install
+```
 
 3. Set up your PostgreSQL database and update the connection details in your project configuration.
 
 4. Start the server:
 
+```sh
 npm start
+```
 
 or if you're using yarn:
 
+```sh
 yarn start
+```
 
 The server will start running on `http://localhost:3000` (or the port you've configured).
 
