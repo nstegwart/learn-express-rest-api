@@ -18,21 +18,28 @@ exports.getPosts = async (req, res, next) => {
 };
 
 exports.createPost = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      message: 'Validation failed, entered data is incorrect.',
-      errors: errors.array()
-    });
-  }
-  const title = req.body.title;
-  const content = req.body.content;
-  const creator = req.body.creator;
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const error = new Error('Validation failed, entered data is incorrect.');
+      error.statusCode = 422;
+      throw error;
+    }
+  
+    if(!req?.file) {
+      const error = new Error('No image provided.');
+      error.statusCode = 422;
+      throw error;
+    }
+  
+    const title = req.body.title;
+    const content = req.body.content;
+    const creator = req.body.creator;
+    const image_url = req.file.path;
     const post = await Post.create({
       title: title,
       content: content,
-      image_url: 'images/duck.jpg',
+      image_url: image_url,
       creator: creator,
       created_at: new Date()
     });
@@ -40,6 +47,24 @@ exports.createPost = async (req, res, next) => {
       message: 'Post created successfully!',
       post: post
     });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
+};
+
+exports.getPostDetail = async (req, res, next) => {
+  const postId = req.params.postId;
+  try {
+    const post = await Post.findByPk(postId);
+    if (!post) {
+      const error = new Error('Could not find post.');
+      error.statusCode = 404;
+      throw error;
+    }
+    res.status(200).json({ message: 'Post fetched.', post: post });
   } catch (error) {
     if (!error.statusCode) {
       error.statusCode = 500;
