@@ -12,36 +12,28 @@ A Node.js API project.
 
 1. Clone the repository:
 
-git clone https://github.com/your-username/learn-nodejs-api.git
-cd learn-nodejs-api
+   git clone https://github.com/your-username/learn-nodejs-api.git
+   cd learn-nodejs-api
 
 2. Install dependencies:
 
-```sh
-npm install
-```
+   npm install
 
-or if you're using yarn:
+   or if you're using yarn:
 
-```sh
-yarn install
-```
+   yarn install
 
 3. Set up your PostgreSQL database and update the connection details in your project configuration.
 
 4. Start the server:
 
-```sh
-npm start
-```
+   npm start
 
-or if you're using yarn:
+   or if you're using yarn:
 
-```sh
-yarn start
-```
+   yarn start
 
-The server will start running on `http://localhost:3000` (or the port you've configured).
+   The server will start running on `http://localhost:3000` (or the port you've configured).
 
 ## Project Structure
 

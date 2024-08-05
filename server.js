@@ -1,7 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const feedRoutes = require('./routes/feed');
-const port = 3000;
+
+const port = process.env.PORT;
 
 const app = express();
 
@@ -18,7 +19,7 @@ app.use((req, res, next) => {
 })
 
 // Start server
-app.listen(port, () => {
+app.listen(process.env.PORT, () => {
     console.log(`Server running on port ${port}`);
   });
   
