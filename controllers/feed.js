@@ -72,3 +72,26 @@ exports.getPostDetail = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.updatePost = async (req, res, next) => {
+  const postId = req.params.postId;
+  const title = req.body.title;
+  const content = req.body.content;
+  try {
+    const post = await Post.findByPk(postId);
+    if (!post) {
+      const error = new Error('Could not find post.');
+      error.statusCode = 404;
+      throw error;
+    }
+    post.title = title;
+    post.content = content;
+    const result = await post.save();
+    res.status(200).json({ message: 'Post updated!', post: result });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
+};

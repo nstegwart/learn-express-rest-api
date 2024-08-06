@@ -5,15 +5,13 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 
 const feedRoutes = require('./routes/feed');
+const authRoutes = require('./routes/auth');
 
 // Import the database connection and models
 const sequelize = require('./utils/database');
-const Post = require('./models/post');
 
 const port = process.env.PORT;
 const app = express();
-
-
 
 /**
  * Configures the file storage settings for the multer middleware.
@@ -65,10 +63,6 @@ app.use((req, res, next) => {
   next();
 })
 
-
-
-app.use('/feed', feedRoutes);
-
 app.use((error, req, res, next) => {
   console.log(`Error express: `, error);
   const status = error.statusCode || 500;
@@ -76,6 +70,11 @@ app.use((error, req, res, next) => {
   // const data = error.data;
   res.status(status).json({ message: message });
 });
+
+app.use('/feed', feedRoutes);
+
+app.use('/api/auth', authRoutes);
+
 
 // Start server
 sequelize.sync()
