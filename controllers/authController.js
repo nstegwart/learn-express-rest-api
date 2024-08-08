@@ -8,11 +8,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const sendEmail = async (to, subject, text) => {
-  console.log(
-    'CHECK EMAIL',
-    process.env.NODEMAIL_EMAIL,
-    process.env.NODEMAIL_PASSWORD
-  );
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     port: 465,
@@ -29,7 +24,6 @@ const sendEmail = async (to, subject, text) => {
     subject,
     text,
   });
-  console.log('CHECK EMAIL', mailSend);
   return mailSend;
 };
 
@@ -82,6 +76,7 @@ exports.register = async (req, res) => {
       `Your OTP is: ${otp}`
     );
 
+    console.log('Successfully registered user:', user.email);
     res.status(201).json({
       message: 'User registered successfully',
       token,
@@ -101,7 +96,6 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ where: { email: email } });
 
-    console.log('USER', email, password, user);
     if (!user.isVerified) {
       return res.status(401).json({ error: 'Please verify your email first' });
     }
@@ -124,7 +118,6 @@ exports.login = async (req, res) => {
 
 exports.getUser = async (req, res) => {
   try {
-    console.log('getUser called', req.userData);
     const user = await User.findByPk(req.userData.userId, {
       attributes: ['id', 'username', 'email', 'createdAt', 'updatedAt'],
     });
