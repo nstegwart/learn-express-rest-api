@@ -6,39 +6,39 @@ const User = sequelize.define('User', {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     allowNull: false,
-    primaryKey: true
+    primaryKey: true,
   },
   username: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true
+    unique: true,
   },
   email: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true,
     validate: {
-      isEmail: true
-    }
+      isEmail: true,
+    },
   },
   password: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
   },
   createdAt: {
     type: DataTypes.DATE,
     allowNull: false,
-    defaultValue: DataTypes.NOW
+    defaultValue: DataTypes.NOW,
   },
   updatedAt: {
     type: DataTypes.DATE,
     allowNull: false,
-    defaultValue: DataTypes.NOW
+    defaultValue: DataTypes.NOW,
   },
   isVerified: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false
-  }
+    defaultValue: false,
+  },
 });
 
 module.exports = User;

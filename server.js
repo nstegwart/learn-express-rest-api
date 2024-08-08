@@ -1,4 +1,4 @@
-const path = require('path')
+const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -15,9 +15,9 @@ const app = express();
 
 /**
  * Configures the file storage settings for the multer middleware.
- * 
+ *
  * The `fileStorage` object defines how uploaded files should be stored on the server.
- * 
+ *
  * - `destination`: A function that determines the directory where uploaded files should be stored. In this case, it sets the destination to the 'images' directory.
  * - `filename`: A function that determines the filename for the uploaded file. It generates a unique filename by combining the current date/time and the original filename.
  */
@@ -27,7 +27,7 @@ const fileStorage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     cb(null, new Date().toISOString() + '-' + file.originalname);
-  }
+  },
 });
 
 const fileFilter = (req, file, cb) => {
@@ -42,15 +42,16 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-
 // for parsing application/json
-app.use(bodyParser.json()); 
+app.use(bodyParser.json());
 
 // for parsing application/xwww-
-app.use(bodyParser.urlencoded({ extended: true })); 
+app.use(bodyParser.urlencoded({ extended: true }));
 //form-urlencoded
 
-app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image_url'));
+app.use(
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single('image_url')
+);
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 // app.use(bodyParser.urlencoded()); //form data
@@ -58,10 +59,13 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 //Fixing CORS
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET, POST, PUT, PATCH, DELETE'
+  );
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
-})
+});
 
 app.use((error, req, res, next) => {
   console.log(`Error express: `, error);
@@ -75,13 +79,13 @@ app.use('/feed', feedRoutes);
 
 app.use('/api/auth', authRoutes);
 
-
 // Start server
-sequelize.sync({ alter: true })
+sequelize
+  .sync({ alter: true })
   .then(() => {
     console.log('Database & tables created!');
     app.listen(process.env.PORT, () => {
       console.log(`Server running on port ${port}`);
     });
   })
-  .catch(err => console.log("Connection database failed: ", err));
+  .catch((err) => console.log('Connection database failed: ', err));

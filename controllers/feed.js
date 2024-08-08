@@ -7,7 +7,7 @@ exports.getPosts = async (req, res, next) => {
     const posts = await Post.findAll();
     res.status(200).json({
       message: 'Fetched posts successfully.',
-      posts: posts
+      posts: posts,
     });
   } catch (error) {
     if (!error.statusCode) {
@@ -25,13 +25,13 @@ exports.createPost = async (req, res, next) => {
       error.statusCode = 422;
       throw error;
     }
-  
-    if(!req?.file) {
+
+    if (!req?.file) {
       const error = new Error('No image provided.');
       error.statusCode = 422;
       throw error;
     }
-  
+
     const title = req.body.title;
     const content = req.body.content;
     const creator = req.body.creator;
@@ -41,11 +41,11 @@ exports.createPost = async (req, res, next) => {
       content: content,
       image_url: image_url,
       creator: creator,
-      created_at: new Date()
+      created_at: new Date(),
     });
     res.status(201).json({
       message: 'Post created successfully!',
-      post: post
+      post: post,
     });
   } catch (error) {
     if (!error.statusCode) {
