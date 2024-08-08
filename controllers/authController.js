@@ -8,6 +8,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const sendEmail = async (to, subject, text) => {
+  console.log(
+    'CHECK EMAIL',
+    process.env.NODEMAIL_EMAIL,
+    process.env.NODEMAIL_PASSWORD
+  );
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     port: 465,
@@ -84,12 +89,10 @@ exports.register = async (req, res) => {
       email: user.email,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: 'Failed registration',
-        data: [{ server: error.message }],
-      });
+    res.status(500).json({
+      message: 'Failed registration',
+      data: [{ server: error.message }],
+    });
   }
 };
 

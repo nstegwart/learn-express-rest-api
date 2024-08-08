@@ -5,12 +5,13 @@
   "author": "nagi",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon --env-file=.env server.js",
+    "start": "nodemon -r dotenv/config server.js",
     "format": "prettier --write \"**/*.{js,json,md}\""
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-validator": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
