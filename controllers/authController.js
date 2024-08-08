@@ -1,6 +1,32 @@
-const User = require('../models/user'); // Pastikan model User sudah dibuat
+const User = require('../models/user');
+const OTP = require('../models/otp');
+const { Op } = require('sequelize');
+
+const nodemailer = require('nodemailer');
+
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+
+const sendEmail = async (to, subject, text) => {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.NODEMAIL_EMAIL,
+      pass: process.env.NODEMAIL_PASSWORD
+    }
+  });
+
+  const mailSend = await transporter.sendMail({
+    from: process.env.NODEMAIL_EMAIL,
+    to,
+    subject,
+    text
+  });
+  console.log("CHECK EMAIL", mailSend);
+  return mailSend;
+};
 
 exports.register = async (req, res) => {
     try {
@@ -29,6 +55,15 @@ exports.register = async (req, res) => {
   
       // Generate token
       const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      await OTP.create({
+        userId: user.id,
+        otp,
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000) // OTP expires in 10 minutes
+      });
+  
+      // Send email
+      await sendEmail(user.email, 'OTP for Account Verification', `Your OTP is: ${otp}`);
   
       res.status(201).json({
         message: 'User registered successfully',
@@ -46,10 +81,16 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ where: { email: email } });
+
+    console.log("USER",email,password, user)
+    if (!user.isVerified) {
+      return res.status(401).json({ error: 'Please verify your email first' });
+    }
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
+    
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(401).json({ error: 'Invalid credentials' });
@@ -71,6 +112,60 @@ exports.getUser = async (req, res) => {
         return res.status(404).json({ error: 'User not found' });
       }
       res.json(user);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+  exports.verifyOTP = async (req, res) => {
+    try {
+      const { otp } = req.body;
+      const userId = req.userData.userId;
+  
+      const validOTP = await OTP.findOne({
+        where: {
+          userId: userId,
+          otp,
+          expiresAt: { [Op.gt]: new Date() }
+        }
+      });
+  
+      if (!validOTP) {
+        return res.status(400).json({ error: 'Invalid or expired OTP' });
+      }
+  
+      await User.update({ isVerified: true }, { where: { id: userId } });
+      await OTP.destroy({ where: { userId: userId } });
+  
+      res.json({ message: 'OTP verified successfully' });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+  
+  exports.resendOTP = async (req, res) => {
+    try {
+      const userId = req.userData.userId;
+      const user = await User.findByPk(userId);
+  
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      // Generate new OTP
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      
+      // Update or create new OTP record
+      await OTP.upsert({
+        userId: user.id,
+        otp,
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000) // OTP expires in 10 minutes
+      });
+  
+      // Send email
+      await sendEmail(user.email, 'New OTP for Account Verification', `Your new OTP is: ${otp}`);
+  
+      res.json({ message: 'New OTP sent successfully' });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

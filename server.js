@@ -77,7 +77,7 @@ app.use('/api/auth', authRoutes);
 
 
 // Start server
-sequelize.sync()
+sequelize.sync({ alter: true })
   .then(() => {
     console.log('Database & tables created!');
     app.listen(process.env.PORT, () => {
