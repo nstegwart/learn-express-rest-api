@@ -24,7 +24,6 @@ const sendEmail = async (to, subject, text) => {
     subject,
     text,
   });
-  console.log('CHECK EMAIL', mailSend);
   return mailSend;
 };
 
@@ -77,6 +76,7 @@ exports.register = async (req, res) => {
       `Your OTP is: ${otp}`
     );
 
+    console.log('Successfully registered user:', user.email);
     res.status(201).json({
       message: 'User registered successfully',
       token,
@@ -84,12 +84,10 @@ exports.register = async (req, res) => {
       email: user.email,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: 'Failed registration',
-        data: [{ server: error.message }],
-      });
+    res.status(500).json({
+      message: 'Failed registration',
+      data: [{ server: error.message }],
+    });
   }
 };
 
@@ -98,7 +96,6 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ where: { email: email } });
 
-    console.log('USER', email, password, user);
     if (!user.isVerified) {
       return res.status(401).json({ error: 'Please verify your email first' });
     }
@@ -121,7 +118,6 @@ exports.login = async (req, res) => {
 
 exports.getUser = async (req, res) => {
   try {
-    console.log('getUser called', req.userData);
     const user = await User.findByPk(req.userData.userId, {
       attributes: ['id', 'username', 'email', 'createdAt', 'updatedAt'],
     });
