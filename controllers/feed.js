@@ -1,14 +1,26 @@
 const { validationResult } = require('express-validator');
+const mcache = require('memory-cache');
 
 const Post = require('../models/post');
 
 exports.getPosts = async (req, res, next) => {
+  const key = '__express__getPosts';
+  const cachedBody = mcache.get(key);
+
+  if (cachedBody) {
+    return res.status(200).json(cachedBody);
+  }
+
   try {
     const posts = await Post.findAll();
-    res.status(200).json({
+    const responseBody = {
       message: 'Fetched posts successfully.',
-      posts: posts,
-    });
+      data: posts,
+    };
+
+    mcache.put(key, responseBody, 60 * 1000); // Cache for 1 minute
+
+    res.status(200).json(responseBody);
   } catch (error) {
     if (!error.statusCode) {
       error.statusCode = 500;

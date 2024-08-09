@@ -5,14 +5,35 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const multer = require('multer');
 
+const { faker } = require('@faker-js/faker');
+
 const feedRoutes = require('./routes/feed');
 const authRoutes = require('./routes/auth');
 
 // Import the database connection and models
 const sequelize = require('./utils/database');
+const Post = require('./models/post'); // Import model Post
 
 const port = process.env.PORT;
 const app = express();
+
+// Fungsi untuk membuat data dummy post
+async function createDummyPosts(count) {
+  try {
+    for (let i = 0; i < count; i++) {
+      await Post.create({
+        title: faker.lorem.sentence(),
+        content: faker.lorem.paragraph(),
+        image_url: faker.image.urlPicsumPhotos(), // Generate URL gambar dummy
+        creator: faker.internet.displayName(),
+        created_at: faker.date.past(),
+      });
+    }
+    console.log(`Berhasil membuat ${count} data dummy post!`);
+  } catch (error) {
+    console.error('Gagal membuat data dummy post:', error);
+  }
+}
 
 /**
  * Configures the file storage settings for the multer middleware.
@@ -85,6 +106,8 @@ sequelize
   .sync({ alter: true })
   .then(() => {
     console.log('Database & tables created!');
+    // Membuat 500 data dummy post
+    // createDummyPosts(9000);
     app.listen(process.env.PORT, () => {
       console.log(`Server running on port ${port}`);
     });
