@@ -4,9 +4,8 @@ A Node.js API project.
 
 ## Prerequisites
 
-- Node.js
-- npm or yarn
-- PostgreSQL database
+- Docker
+- Docker Compose
 
 ## Installation and Running the Application
 
@@ -15,30 +14,33 @@ A Node.js API project.
    git clone https://github.com/your-username/learn-nodejs-api.git
    cd learn-nodejs-api
 
-2. Install dependencies:
+2. Create a `.env` file in the root directory and add the following environment variables:
 
-   npm install
+   PORT=3000
+   POSTGREHOST=your_postgres_host
+   POSTGRESUSER=your_postgres_user
+   POSTGRESPASSWORD=your_postgres_password
+   POSTGRESPORT=your_postgres_port
+   POSTGREDB=your_database_name
+   JWT_SECRET=your_jwt_secret
+   NODEMAIL_EMAIL=your_email@example.com
+   NODEMAIL_PASSWORD=your_email_password
 
-   or if you're using yarn:
+   Replace the placeholder values with your actual configuration.
 
-   yarn install
+3. Build and start the Docker containers:
 
-3. Set up your PostgreSQL database and update the connection details in your project configuration.
+   docker-compose up --build
 
-4. Start the server:
-
-   npm start
-
-   or if you're using yarn:
-
-   yarn start
-
-   The server will start running on `http://localhost:3000` (or the port you've configured).
+   The server will start running on `http://localhost:3000`.
 
 ## Project Structure
 
 - `server.js`: Main entry point of the application
 - `package.json`: Project metadata and dependencies
+- `Dockerfile`: Instructions for building the Docker image
+- `docker-compose.yml`: Docker Compose configuration file
+- `.env.local`: Environment variables for local development
 
 ## Dependencies
 
@@ -46,6 +48,17 @@ A Node.js API project.
 - sequelize: ORM for database operations
 - pg and pg-hstore: PostgreSQL database driver
 - body-parser: Middleware to parse incoming request bodies
+- bcryptjs: Library for hashing passwords
+- jsonwebtoken: JSON Web Token implementation
+- multer: Middleware for handling multipart/form-data
+- nodemailer: Module for sending emails
+- dotenv: Module to load environment variables from a file
+
+## Docker Services
+
+- `app`: Node.js application container
+- `db`: PostgreSQL database container
+- `backup`: Service for automated database backups
 
 ## License
 
