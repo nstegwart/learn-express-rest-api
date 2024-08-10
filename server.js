@@ -1,5 +1,5 @@
 const path = require('path');
-const { scheduleBackup } = require('./utils/backup');
+// const { scheduleBackup } = require('./utils/backup');
 
 require('dotenv').config();
 
@@ -7,14 +7,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const multer = require('multer');
 
-const { faker } = require('@faker-js/faker');
+// const { faker } = require('@faker-js/faker');
 
 const feedRoutes = require('./routes/feed');
 const authRoutes = require('./routes/auth');
 
 // Import the database connection and models
 const sequelize = require('./utils/database');
-const Post = require('./models/post'); // Import model Post
+// const Post = require('./models/post'); // Import model Post
 
 const port = process.env.PORT;
 const app = express();
@@ -110,7 +110,7 @@ sequelize
     console.log('Database & tables created!');
     // Membuat 500 data dummy post
     // createDummyPosts(9000);
-    scheduleBackup();
+    // scheduleBackup();
     app.listen(process.env.PORT, () => {
       console.log(`Server running on port ${port}`);
     });
