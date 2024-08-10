@@ -1,8 +1,9 @@
 version: '3'
+name: learn-nodejs-api
 services:
   app:
     build: .
-    platform: linux/arm64 # Menentukan platform untuk image
+    platform: linux/arm64
     ports:
       - '3000:3000'
     depends_on:
@@ -14,14 +15,20 @@ services:
       - POSTGRESPASSWORD=postgres
       - POSTGRESPORT=5432
       - POSTGREDB=learn-express-rest-api
+      - COMPOSE_PROJECT_NAME=learn-nodejs-api
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    privileged: true
   db:
-    image: arm64v8/postgres:13 # Menggunakan image PostgreSQL untuk ARM64
+    image: arm64v8/postgres:13
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=learn-express-rest-api
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - backups:/usr/src/app/backups
 
 volumes:
   postgres_data:
+  backups:
