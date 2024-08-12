@@ -1,4 +1,4 @@
-FROM arm64v8/node:14
+FROM node:14
 # Atau gunakan versi Node.js yang lebih baru jika diperlukan
 
 # RUN apt-get update && apt-get install -y docker.io
