@@ -14,7 +14,7 @@ A Node.js API project.
    git clone https://github.com/your-username/learn-nodejs-api.git
    cd learn-nodejs-api
 
-2. Create a `.env` file in the root directory and add the following environment variables:
+2. Copy the `.env.local` file to `.env` in the root directory:
 
    PORT=3000
    POSTGREHOST=your_postgres_host
@@ -40,7 +40,7 @@ A Node.js API project.
 - `package.json`: Project metadata and dependencies
 - `Dockerfile`: Instructions for building the Docker image
 - `docker-compose.yml`: Docker Compose configuration file
-- `.env.local`: Environment variables for local development
+- `.env`: Environment variables for local development
 
 ## Dependencies
 
