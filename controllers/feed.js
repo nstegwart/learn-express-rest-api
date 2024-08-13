@@ -55,7 +55,7 @@ exports.getPosts = async (req, res, next) => {
   }
 };
 
-exports.createPostMassive = async (req, res, next) => {
+exports.createPost = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
