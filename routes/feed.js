@@ -5,6 +5,7 @@ const router = express.Router();
 const feedController = require('../controllers/feed');
 
 router.get('/list', feedController.getPosts);
+router.post('/create-massive', feedController.createMassivePost);
 
 //Validate data before creating a post
 router.post(

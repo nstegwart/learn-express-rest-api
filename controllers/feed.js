@@ -3,6 +3,32 @@ const mcache = require('memory-cache');
 
 const Post = require('../models/post');
 
+exports.createMassivePost = async (req, res, next) => {
+  try {
+    const dummyPosts = [];
+    for (let i = 0; i < 1000; i++) {
+      dummyPosts.push({
+        title: `Dummy Post ${i + 1}`,
+        content: `This is the content of dummy post number ${i + 1}`,
+        image_url: 'https://example.com/dummy-image.jpg',
+        creator: 'Dummy Creator',
+      });
+    }
+
+    await Post.bulkCreate(dummyPosts);
+
+    res.status(201).json({
+      message: '1000 dummy posts created successfully!',
+      count: dummyPosts.length,
+    });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
+};
+
 exports.getPosts = async (req, res, next) => {
   const key = '__express__getPosts';
   const cachedBody = mcache.get(key);
@@ -29,7 +55,7 @@ exports.getPosts = async (req, res, next) => {
   }
 };
 
-exports.createPost = async (req, res, next) => {
+exports.createPostMassive = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
