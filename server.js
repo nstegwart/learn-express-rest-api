@@ -103,6 +103,10 @@ app.use('/feed', feedRoutes);
 
 app.use('/api/auth', authRoutes);
 
+app.get('/', (req, res) => {
+  res.status(200).json({ message: 'Success! The API is running.' });
+});
+
 // Start server
 sequelize
   .sync({ alter: true })
