@@ -103,6 +103,10 @@ app.use('/feed', feedRoutes);
 
 app.use('/api/auth', authRoutes);
 
+app.get('/loaderio-353fac6a149cbc773e16c45e75d003b1.txt', (req, res) => {
+  res.send('loaderio-353fac6a149cbc773e16c45e75d003b1');
+});
+
 app.get('/', (req, res) => {
   res.status(200).json({ message: 'Success! The API is running.' });
 });
